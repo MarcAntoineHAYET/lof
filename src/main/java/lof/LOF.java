@@ -13,7 +13,6 @@ public class LOF {
 	private int k;
 	private double distanceAtteignabilite;
 	private double distanceAtteignabiliteDensity;
-	private ArrayList<Data> datas;
 	private Euclide euclide;
 	
 	public LOF() {
@@ -21,10 +20,17 @@ public class LOF {
 	}
 	
 	public LOF(int k) {
+		this.euclide = new Euclide();
 		this.k = k;
 	}
-
-	public void lancer() {
+	
+	/**
+	 * Permet de calculer les distances euclidiennes de chacun des points.
+	 * 
+	 * @param datas
+	 * @return distancesEuclidiennes
+	 */
+	public ArrayList<Pair<Data, Double>> recupererDistancesEuclidiennes(ArrayList<Data> datas){
 		ArrayList<Pair<Data, Double>> distancesEuclidiennes = new ArrayList<Pair<Data, Double>>();
 		double distanceEuclidienne;
 		for(int x = 0; x < datas.size(); x++) {
@@ -35,6 +41,18 @@ public class LOF {
 				Pair<Data, Double> calcul = Pair.with(datas.get(x), distanceEuclidienne);
 				distancesEuclidiennes.add(calcul);
 			}
+		}
+		return distancesEuclidiennes;
+	}
+	
+	/**
+	 * Permet d'afficher les distances euclidiennes.
+	 * 
+	 * @param distancesEuclidiennes
+	 */
+	public void afficherDistancesEuclidiennes(ArrayList<Pair<Data, Double>> distancesEuclidiennes) {
+		for(Pair<Data, Double> distanceEuclidienne : distancesEuclidiennes) {
+			System.out.println(distanceEuclidienne.getValue0().getPosition() + " " + distanceEuclidienne.getValue1());
 		}
 	}
 	
@@ -60,13 +78,5 @@ public class LOF {
 
 	public void setDistanceAtteignabiliteDensity(double distanceAtteignabiliteDensity) {
 		this.distanceAtteignabiliteDensity = distanceAtteignabiliteDensity;
-	}
-
-	public ArrayList<Data> getDatas() {
-		return datas;
-	}
-
-	public void setDatas(ArrayList<Data> datas) {
-		this.datas = datas;
 	}
 }
