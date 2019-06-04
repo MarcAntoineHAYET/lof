@@ -15,6 +15,7 @@ public class App {
 	public static void main(String[] args) {
 		Kmeans kmeans = new Kmeans();
 		LOF lof = new LOF();
+		lof.setK(2);
 
 		ArrayList<Data> datas = new ArrayList<Data>();
 		
@@ -22,11 +23,25 @@ public class App {
 		datas = kmeans.normaliserValeursBrutes(datas);
 		datas = kmeans.calculerPositions(datas);
 		
+		/*
 		ArrayList<Pair<Data, Double>> distancesEuclidiennes = lof.recupererDistancesEuclidiennes(datas);
 		ArrayList<Pair<Data, Integer>> distancesManhattan = lof.recupererDistancesManhattan(datas);
 		
 		lof.afficherDistancesEuclidiennes(distancesEuclidiennes);	
 		lof.afficherDistancesManhattan(distancesManhattan);
+		
+		*/
+		for(Data data : datas) {
+			System.out.println("Point : " + data.getPosition());
+			ArrayList<Pair<Data, Integer>> distancesManhattan = lof.recupererDistancesManhattan(data, datas);
+			for(Pair<Data, Integer> distanceManhattan : distancesManhattan) {
+				System.out.println(distanceManhattan.getValue0().getPosition() + " " + distanceManhattan.getValue1());
+			}
+			
+			Pair<Data, Integer> kPlusProche = lof.recupererKPLusProcheVoisin(distancesManhattan);
+			System.out.println("Le k plus proche est : " + kPlusProche.getValue0().getPosition() + " avec une distance de " + kPlusProche.getValue1());
+		}
+	
 	}
 
 }

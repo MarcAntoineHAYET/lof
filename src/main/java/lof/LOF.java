@@ -28,6 +28,10 @@ public class LOF {
 		this.k = k;
 	}
 	
+	public Pair<Data, Integer> recupererKPLusProcheVoisin(ArrayList<Pair<Data, Integer>> distances){
+		return distances.get(k - 1);
+	}
+	
 	/**
 	 * Permet de calculer les distances euclidiennes de chacun des points.
 	 * 
@@ -49,9 +53,23 @@ public class LOF {
 		return distancesEuclidiennes;
 	}
 	
+	public ArrayList<Pair<Data, Integer>> recupererDistancesManhattan(Data data, ArrayList<Data> datas){
+		ArrayList<Pair<Data, Integer>> distancesManhattan = new ArrayList<Pair<Data, Integer>>();
+		for(Data d : datas) {
+			if (data != d) {
+				Position a = data.getPosition();
+				Position b = d.getPosition();
+				int distanceManhattan = manhattan.calculerDistanceManhattan(a.getX(), a.getY(), b.getX(), b.getY());
+				Pair<Data, Integer> calcul = Pair.with(d, distanceManhattan);
+				distancesManhattan.add(calcul);
+			}
+		}
+		return distancesManhattan;
+	}
+	
 	/**
 	 * Permet de calculer les distances de Manhattan de chacun des points.
-	 * 
+	 *  
 	 * @param datas
 	 * @return distancesManhattan
 	 */
