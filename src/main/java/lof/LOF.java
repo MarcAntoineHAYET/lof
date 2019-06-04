@@ -7,6 +7,7 @@ import org.javatuples.Pair;
 import euclide.Euclide;
 import kmeans.Data;
 import kmeans.Position;
+import manhattan.Manhattan;
 
 public class LOF {
 	
@@ -14,13 +15,16 @@ public class LOF {
 	private double distanceAtteignabilite;
 	private double distanceAtteignabiliteDensity;
 	private Euclide euclide;
+	private Manhattan manhattan;
 	
 	public LOF() {
 		this.euclide = new Euclide();
+		this.manhattan = new Manhattan();
 	}
 	
 	public LOF(int k) {
 		this.euclide = new Euclide();
+		this.manhattan = new Manhattan();
 		this.k = k;
 	}
 	
@@ -46,6 +50,27 @@ public class LOF {
 	}
 	
 	/**
+	 * Permet de calculer les distances de Manhattan de chacun des points.
+	 * 
+	 * @param datas
+	 * @return distancesManhattan
+	 */
+	public ArrayList<Pair<Data, Integer>> recupererDistancesManhattan(ArrayList<Data> datas){
+		ArrayList<Pair<Data, Integer>> distancesManhattan = new ArrayList<Pair<Data, Integer>>();
+		int distanceManhattan;
+		for(int x = 0; x < datas.size(); x++) {
+			for(int y = x + 1; y < datas.size(); y++) {
+				Position a = datas.get(x).getPosition();
+				Position b = datas.get(y).getPosition();
+				distanceManhattan = manhattan.calculerDistanceManhattan(a.getX(), a.getY(), b.getX(), b.getY());
+				Pair<Data, Integer> calcul = Pair.with(datas.get(x), distanceManhattan);
+				distancesManhattan.add(calcul);
+			}
+		}
+		return distancesManhattan;
+	}
+	
+	/**
 	 * Permet d'afficher les distances euclidiennes.
 	 * 
 	 * @param distancesEuclidiennes
@@ -53,6 +78,17 @@ public class LOF {
 	public void afficherDistancesEuclidiennes(ArrayList<Pair<Data, Double>> distancesEuclidiennes) {
 		for(Pair<Data, Double> distanceEuclidienne : distancesEuclidiennes) {
 			System.out.println(distanceEuclidienne.getValue0().getPosition() + " " + distanceEuclidienne.getValue1());
+		}
+	}
+	
+	/**
+	 * Permet d'afficher les distances de Manhattan.
+	 * 
+	 * @param distancesManhattan
+	 */
+	public void afficherDistancesManhattan(ArrayList<Pair<Data, Integer>> distancesManhattan) {
+		for(Pair<Data, Integer> distanceManhattan : distancesManhattan) {
+			System.out.println(distanceManhattan.getValue0().getPosition() + " " + distanceManhattan.getValue1());
 		}
 	}
 	

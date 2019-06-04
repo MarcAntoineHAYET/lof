@@ -23,8 +23,10 @@ public class App {
 		datas = kmeans.calculerPositions(datas);
 		
 		ArrayList<Pair<Data, Double>> distancesEuclidiennes = lof.recupererDistancesEuclidiennes(datas);
+		ArrayList<Pair<Data, Integer>> distancesManhattan = lof.recupererDistancesManhattan(datas);
 		
 		lof.afficherDistancesEuclidiennes(distancesEuclidiennes);	
+		lof.afficherDistancesManhattan(distancesManhattan);
 	}
 
 }
