@@ -22,6 +22,64 @@ public class LOF {
 		this.manhattan = new Manhattan();
 		this.k = k;
 	}
+	
+	/**
+	 * Permet de récupérer les facteursLocauxAberrants (Local Outlier Factor) de l'ensemble des points.
+	 * 
+	 * @param points
+	 * @return facteursLocauxAberrants
+	 */
+	public ArrayList<Pair<Point, Double>> recupererFacteursLocauxAberrants(ArrayList<Point> points){
+		ArrayList<Pair<Point, Double>> facteursLocauxAberrants = new ArrayList<Pair<Point, Double>>();
+		for(Point point : points) {
+			System.out.println("Point : " + point + "\n");
+			ArrayList<Pair<Point, Integer>> distancesManhattan = recupererDistancesManhattan(point, points);
+			point.setDistancesManhattan(distancesManhattan);
+			
+			System.out.println("Distance de Manhattan par rapport aux autres points : ");
+			for(Pair<Point, Integer> distanceManhattan : distancesManhattan) {
+				System.out.println(distanceManhattan.getValue0() + " " + distanceManhattan.getValue1());
+			}
+			
+			Pair<Point, Integer> plusProcheVoisin = recupererPlusProcheVoisin(distancesManhattan);
+			System.out.println("Le k(" + getK() + ") plus proche est : " + plusProcheVoisin.getValue0() + " avec une distance de " + plusProcheVoisin.getValue1());
+			point.setPlusProcheVoisin(plusProcheVoisin);
+			
+			ArrayList<Pair<Point, Integer>> kPlusProchesVoisins = recupererKPLusProchesVoisins(distancesManhattan);
+			System.out.println("Les k(" + getK() + ") plus proches voisins : ");
+			point.setkPlusProchesVoisins(kPlusProchesVoisins);
+			
+			for(Pair<Point, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
+				System.out.println(kPlusProcheVoisin.getValue0());
+			}
+			
+			ArrayList<Integer> distancesAtteignabilites = new ArrayList<Integer>();
+			// refactorisation
+			ArrayList<Pair<Point, Integer>> distancesAtteignabilites2 = new ArrayList<Pair<Point, Integer>>();
+			
+			for(Pair<Point, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
+				Pair<Point, Integer> distanceDuPlusProcheVoisin = recupererDistanceDuPlusProcheVoisin(kPlusProcheVoisin.getValue0(), points);
+				int distanceAtteignabilite = calculerDistanceAtteignabilite(distanceDuPlusProcheVoisin.getValue1().intValue(), manhattan.calculerDistanceManhattan(point.getX(), point.getY(), kPlusProcheVoisin.getValue0().getX(), kPlusProcheVoisin.getValue0().getY()));
+				distancesAtteignabilites.add(distanceAtteignabilite);
+				distancesAtteignabilites2.add(Pair.with(kPlusProcheVoisin.getValue0(), distanceAtteignabilite));
+				System.out.println("Distance d'atteignabilité (Reach Distance) du point " + point + " vers " + kPlusProcheVoisin.getValue0() + " est : " + distanceAtteignabilite);
+			}
+			
+			// refactorisation
+			point.setDistancesAtteignabilites(distancesAtteignabilites2);
+			
+			double densiteAtteignabiliteLocale = calculerDensiteAtteignabiliteLocale(distancesAtteignabilites);
+			System.out.println("La densité d'atteignabilité locale (Local Reachability Density) du point " + point + " est : " + densiteAtteignabiliteLocale + "\n");
+			point.setDensiteAtteignabiliteLocale(densiteAtteignabiliteLocale);
+		}
+		
+		for(Point point : points) {
+			double facteurLocalAberrant = calculerFacteurLocalAberrant(point.getkPlusProchesVoisins(), point.getDistancesAtteignabilites());
+			facteursLocauxAberrants.add(Pair.with(point, facteurLocalAberrant));
+		}
+		
+		return facteursLocauxAberrants;
+	}
 
 	/**
 	 * Permet de récupérer les k plus proches voisins.
@@ -37,6 +95,12 @@ public class LOF {
 		return kPlusProchesVoisins;
 	}
 	
+	/**
+	 * Permet de calculer le facteur local abérrant (Local Outlier Factor)
+	 * @param kPlusProchesVoisins
+	 * @param distancesAtteignabilites
+	 * @return facteurLocalAberrant
+	 */
 	public double calculerFacteurLocalAberrant(ArrayList<Pair<Point, Integer>> kPlusProchesVoisins, ArrayList<Pair<Point, Integer>> distancesAtteignabilites) {
 		double facteurLocalAberrant = 0;
 		double sommeDesDensitesAtteignabilitesLocales = 0;
