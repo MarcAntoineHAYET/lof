@@ -36,6 +36,20 @@ public class LOF {
 		}
 		return kPlusProchesVoisins;
 	}
+	
+	public double calculerFacteurLocalAberrant(ArrayList<Pair<Point, Integer>> kPlusProchesVoisins, ArrayList<Pair<Point, Integer>> distancesAtteignabilites) {
+		double facteurLocalAberrant = 0;
+		double sommeDesDensitesAtteignabilitesLocales = 0;
+		int sommeDesdistancesAtteignabilites = 0;
+		for(Pair<Point, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
+			sommeDesDensitesAtteignabilitesLocales = sommeDesDensitesAtteignabilitesLocales + kPlusProcheVoisin.getValue0().getDensiteAtteignabiliteLocale();
+		}
+		for(Pair<Point, Integer> distanceAtteignabilite : distancesAtteignabilites) {
+			sommeDesdistancesAtteignabilites = sommeDesdistancesAtteignabilites + distanceAtteignabilite.getValue1();
+		}
+		facteurLocalAberrant = (sommeDesDensitesAtteignabilitesLocales * sommeDesdistancesAtteignabilites) / (k * k);
+		return facteurLocalAberrant;
+	}
 
 	/**
 	 * Permet de récupérer la distance de Manhattan du plus proche voisin du point
@@ -115,11 +129,10 @@ public class LOF {
 	/**
 	 * Permet de calculer la densité d'accessibilité locale.
 	 * 
-	 * @param k
 	 * @param distancesAtteignabilites
 	 * @return densiteAccessibiliteLocale
 	 */
-	public double calculerDensiteAtteignabiliteLocale(int k, ArrayList<Integer> distancesAtteignabilites) {
+	public double calculerDensiteAtteignabiliteLocale(ArrayList<Integer> distancesAtteignabilites) {
 		int atteignabiliteLocale = 0;
 		for (int distanceAtteignabilite : distancesAtteignabilites) {
 			atteignabiliteLocale = atteignabiliteLocale + distanceAtteignabilite;
