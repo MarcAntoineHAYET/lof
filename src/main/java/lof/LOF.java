@@ -140,7 +140,7 @@ public class LOF {
 		for(int distanceAtteignabilite : distancesAtteignabilites) {
 			atteignabiliteLocale = atteignabiliteLocale + distanceAtteignabilite;
 		}
-		return k / atteignabiliteLocale;
+		return (double) k / atteignabiliteLocale;
 	}
 	
 	
