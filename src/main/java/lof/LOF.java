@@ -96,6 +96,17 @@ public class LOF {
 	}
 	
 	/**
+	 * Permet d'afficher dans la console les points avec les facteurs locaux abérrants calculés.
+	 * 
+	 * @param facteursLocauxAberrants
+	 */
+	public void afficherFacteursLocauxAberrants(ArrayList<Pair<Point, Double>> facteursLocauxAberrants) {
+		for(Pair<Point, Double> facteurLocalAberrant : facteursLocauxAberrants) {
+			System.out.println("Le Local Outlier Factor du point " + facteurLocalAberrant.getValue0() + " est : " + facteurLocalAberrant.getValue1());
+		}
+	}
+	
+	/**
 	 * Permet de calculer le facteur local abérrant (Local Outlier Factor)
 	 * @param kPlusProchesVoisins
 	 * @param distancesAtteignabilites
