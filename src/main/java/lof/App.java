@@ -47,6 +47,7 @@ public class App {
 				Pair<Point, Integer> distanceDuPlusProcheVoisin = lof.recupererDistanceDuPlusProcheVoisin(kPlusProcheVoisin.getValue0(), points);
 				int distanceAtteignabilite = lof.calculerDistanceAtteignabilite(distanceDuPlusProcheVoisin.getValue1().intValue(), manhattan.calculerDistanceManhattan(point.getX(), point.getY(), kPlusProcheVoisin.getValue0().getX(), kPlusProcheVoisin.getValue0().getY()));
 				distancesAtteignabilites.add(distanceAtteignabilite);
+				System.out.println("Distance d'atteignabilité (Reach Distance) du point " + point + " vers " + kPlusProcheVoisin.getValue0() + " est : " + distanceAtteignabilite);
 			}
 			
 			System.out.println("La densité d'atteignabilité locale (Local Reachability Density) du point " + point + " est : " + lof.calculerDensiteAtteignabiliteLocale(2, distancesAtteignabilites) + "\n");
