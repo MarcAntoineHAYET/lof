@@ -14,10 +14,10 @@ public class App {
 		
 		ArrayList<Point> points = new ArrayList<Point>();
 		
-		points.add(new Point(0, 0));
-		points.add(new Point(0, 1));
-		points.add(new Point(1, 1));
-		points.add(new Point(3, 0));
+		points.add(new Point(0, 0)); // a
+		points.add(new Point(0, 1)); // b
+		points.add(new Point(1, 1)); // c
+		points.add(new Point(3, 0)); // d
 		
 		Manhattan manhattan = new Manhattan();
 		
