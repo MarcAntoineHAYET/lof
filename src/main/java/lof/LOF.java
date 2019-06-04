@@ -28,8 +28,40 @@ public class LOF {
 		this.k = k;
 	}
 	
-	public Pair<Data, Integer> recupererKPLusProcheVoisin(ArrayList<Pair<Data, Integer>> distances){
-		return distances.get(k - 1);
+	
+	/**
+	 * Permet de récupérer les k plus proches voisins.
+	 * 
+	 * @param distances
+	 * @return kPlusProchesVoisins
+	 */
+	public ArrayList<Pair<Data, Integer>> recupererKPLusProchesVoisins(ArrayList<Pair<Data, Integer>> distances){
+		ArrayList<Pair<Data, Integer>> kPlusProchesVoisins = new ArrayList<Pair<Data, Integer>>();
+		for(int x = 0; x < k; x++) {
+			kPlusProchesVoisins.add(distances.get(x));
+		}
+		return kPlusProchesVoisins;
+	}
+	
+	/**
+	 * Permet de récupérer la distance de Manhattan du plus proche voisin du point passé en paramètre.
+	 * @param data
+	 * @return plusProcheVoisin
+	 */
+	public Pair<Data, Integer> recupererDistanceDuPlusProcheVoisin(Data data, ArrayList<Data> datas) {
+		ArrayList<Pair<Data, Integer>> distancesManhattan = recupererDistancesManhattan(data, datas);
+		Pair<Data, Integer> plusProcheVoisin = recupererPlusProcheVoisin(distancesManhattan);
+		return plusProcheVoisin;
+	}
+	
+	/**
+	 * Permet de récupérer le plus proche voisin.
+	 * 
+	 * @param distancesManhattan
+	 * @return plusProcheVoisin
+	 */
+	public Pair<Data, Integer> recupererPlusProcheVoisin(ArrayList<Pair<Data, Integer>> distancesManhattan){
+		return distancesManhattan.get(k - 1);
 	}
 	
 	/**
@@ -53,6 +85,13 @@ public class LOF {
 		return distancesEuclidiennes;
 	}
 	
+	/**
+	 * Permet de récupérer les distances de Manhattan.
+	 * 
+	 * @param data
+	 * @param datas
+	 * @return distancesManhattan
+	 */
 	public ArrayList<Pair<Data, Integer>> recupererDistancesManhattan(Data data, ArrayList<Data> datas){
 		ArrayList<Pair<Data, Integer>> distancesManhattan = new ArrayList<Pair<Data, Integer>>();
 		for(Data d : datas) {
@@ -86,6 +125,40 @@ public class LOF {
 			}
 		}
 		return distancesManhattan;
+	}
+	
+	/**
+	 * Permet de calculer la densité d'accessibilité locale.
+	 * 
+	 * @param data
+	 * @param k
+	 * @param distancesAtteignabilites
+	 * @return densiteAtteignabiliteLocale
+	 */
+	public double calculerDensiteAtteignabiliteLocale(Data data, int k, ArrayList<Integer> distancesAtteignabilites) {
+		int atteignabiliteLocale = 0;
+		for(int distanceAtteignabilite : distancesAtteignabilites) {
+			atteignabiliteLocale = atteignabiliteLocale + distanceAtteignabilite;
+		}
+		return k / atteignabiliteLocale;
+	}
+	
+	
+	/**
+	 * Permet de calculer la distance d'atteignabilité d'un point.
+	 * 
+	 * @param distanceDuPlusProcheVoisinK
+	 * @param distanceManhattan
+	 * @return distanceAtteignabilite
+	 */
+	public int calculerDistanceAtteignabilite(int distanceDuPlusProcheVoisinK, int distanceManhattan) {
+		int distanceAtteignabilite;
+		if (distanceDuPlusProcheVoisinK > distanceManhattan) {
+			distanceAtteignabilite = distanceDuPlusProcheVoisinK;
+		} else {
+			distanceAtteignabilite = distanceManhattan;
+		}
+		return distanceAtteignabilite;
 	}
 	
 	/**
