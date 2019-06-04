@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 import org.javatuples.Pair;
 
-import euclide.Euclide;
-import kmeans.Data;
-import kmeans.Position;
 import manhattan.Manhattan;
 
 public class LOF {
@@ -14,16 +11,13 @@ public class LOF {
 	private int k;
 	private double distanceAtteignabilite;
 	private double distanceAtteignabiliteDensity;
-	private Euclide euclide;
 	private Manhattan manhattan;
 	
 	public LOF() {
-		this.euclide = new Euclide();
 		this.manhattan = new Manhattan();
 	}
 	
 	public LOF(int k) {
-		this.euclide = new Euclide();
 		this.manhattan = new Manhattan();
 		this.k = k;
 	}
@@ -35,8 +29,8 @@ public class LOF {
 	 * @param distances
 	 * @return kPlusProchesVoisins
 	 */
-	public ArrayList<Pair<Data, Integer>> recupererKPLusProchesVoisins(ArrayList<Pair<Data, Integer>> distances){
-		ArrayList<Pair<Data, Integer>> kPlusProchesVoisins = new ArrayList<Pair<Data, Integer>>();
+	public ArrayList<Pair<Point, Integer>> recupererKPLusProchesVoisins(ArrayList<Pair<Point, Integer>> distances){
+		ArrayList<Pair<Point, Integer>> kPlusProchesVoisins = new ArrayList<Pair<Point, Integer>>();
 		for(int x = 0; x < k; x++) {
 			kPlusProchesVoisins.add(distances.get(x));
 		}
@@ -48,9 +42,9 @@ public class LOF {
 	 * @param data
 	 * @return plusProcheVoisin
 	 */
-	public Pair<Data, Integer> recupererDistanceDuPlusProcheVoisin(Data data, ArrayList<Data> datas) {
-		ArrayList<Pair<Data, Integer>> distancesManhattan = recupererDistancesManhattan(data, datas);
-		Pair<Data, Integer> plusProcheVoisin = recupererPlusProcheVoisin(distancesManhattan);
+	public Pair<Point, Integer> recupererDistanceDuPlusProcheVoisin(Point point, ArrayList<Point> datas) {
+		ArrayList<Pair<Point, Integer>> distancesManhattan = recupererDistancesManhattan(point, datas);
+		Pair<Point, Integer> plusProcheVoisin = recupererPlusProcheVoisin(distancesManhattan);
 		return plusProcheVoisin;
 	}
 	
@@ -60,29 +54,8 @@ public class LOF {
 	 * @param distancesManhattan
 	 * @return plusProcheVoisin
 	 */
-	public Pair<Data, Integer> recupererPlusProcheVoisin(ArrayList<Pair<Data, Integer>> distancesManhattan){
+	public Pair<Point, Integer> recupererPlusProcheVoisin(ArrayList<Pair<Point, Integer>> distancesManhattan){
 		return distancesManhattan.get(k - 1);
-	}
-	
-	/**
-	 * Permet de calculer les distances euclidiennes de chacun des points.
-	 * 
-	 * @param datas
-	 * @return distancesEuclidiennes
-	 */
-	public ArrayList<Pair<Data, Double>> recupererDistancesEuclidiennes(ArrayList<Data> datas){
-		ArrayList<Pair<Data, Double>> distancesEuclidiennes = new ArrayList<Pair<Data, Double>>();
-		double distanceEuclidienne;
-		for(int x = 0; x < datas.size(); x++) {
-			for(int y = x + 1; y < datas.size(); y++) {
-				Position a = datas.get(x).getPosition();
-				Position b = datas.get(y).getPosition();
-				distanceEuclidienne = euclide.calculerDistanceEuclidienne(a.getX(), a.getY(), b.getX(), b.getY());
-				Pair<Data, Double> calcul = Pair.with(datas.get(x), distanceEuclidienne);
-				distancesEuclidiennes.add(calcul);
-			}
-		}
-		return distancesEuclidiennes;
 	}
 	
 	/**
@@ -92,14 +65,12 @@ public class LOF {
 	 * @param datas
 	 * @return distancesManhattan
 	 */
-	public ArrayList<Pair<Data, Integer>> recupererDistancesManhattan(Data data, ArrayList<Data> datas){
-		ArrayList<Pair<Data, Integer>> distancesManhattan = new ArrayList<Pair<Data, Integer>>();
-		for(Data d : datas) {
-			if (data != d) {
-				Position a = data.getPosition();
-				Position b = d.getPosition();
-				int distanceManhattan = manhattan.calculerDistanceManhattan(a.getX(), a.getY(), b.getX(), b.getY());
-				Pair<Data, Integer> calcul = Pair.with(d, distanceManhattan);
+	public ArrayList<Pair<Point, Integer>> recupererDistancesManhattan(Point point, ArrayList<Point> points){
+		ArrayList<Pair<Point, Integer>> distancesManhattan = new ArrayList<Pair<Point, Integer>>();
+		for(Point p : points) {
+			if (point != p) {
+				int distanceManhattan = manhattan.calculerDistanceManhattan(point.getX(), point.getY(), p.getX(), p.getY());
+				Pair<Point, Integer> calcul = Pair.with(p, distanceManhattan);
 				distancesManhattan.add(calcul);
 			}
 		}
@@ -109,18 +80,18 @@ public class LOF {
 	/**
 	 * Permet de calculer les distances de Manhattan de chacun des points.
 	 *  
-	 * @param datas
+	 * @param points
 	 * @return distancesManhattan
 	 */
-	public ArrayList<Pair<Data, Integer>> recupererDistancesManhattan(ArrayList<Data> datas){
-		ArrayList<Pair<Data, Integer>> distancesManhattan = new ArrayList<Pair<Data, Integer>>();
+	public ArrayList<Pair<Point, Integer>> recupererDistancesManhattan(ArrayList<Point> points){
+		ArrayList<Pair<Point, Integer>> distancesManhattan = new ArrayList<Pair<Point, Integer>>();
 		int distanceManhattan;
-		for(int x = 0; x < datas.size(); x++) {
-			for(int y = x + 1; y < datas.size(); y++) {
-				Position a = datas.get(x).getPosition();
-				Position b = datas.get(y).getPosition();
+		for(int x = 0; x < points.size(); x++) {
+			for(int y = x + 1; y < points.size(); y++) {
+				Point a = points.get(x);
+				Point b = points.get(y);
 				distanceManhattan = manhattan.calculerDistanceManhattan(a.getX(), a.getY(), b.getX(), b.getY());
-				Pair<Data, Integer> calcul = Pair.with(datas.get(x), distanceManhattan);
+				Pair<Point, Integer> calcul = Pair.with(points.get(x), distanceManhattan);
 				distancesManhattan.add(calcul);
 			}
 		}
@@ -130,19 +101,17 @@ public class LOF {
 	/**
 	 * Permet de calculer la densité d'accessibilité locale.
 	 * 
-	 * @param data
 	 * @param k
 	 * @param distancesAtteignabilites
-	 * @return densiteAtteignabiliteLocale
+	 * @return densiteAccessibiliteLocale
 	 */
-	public double calculerDensiteAtteignabiliteLocale(Data data, int k, ArrayList<Integer> distancesAtteignabilites) {
+	public double calculerDensiteAtteignabiliteLocale(int k, ArrayList<Integer> distancesAtteignabilites) {
 		int atteignabiliteLocale = 0;
 		for(int distanceAtteignabilite : distancesAtteignabilites) {
 			atteignabiliteLocale = atteignabiliteLocale + distanceAtteignabilite;
 		}
 		return (double) k / atteignabiliteLocale;
 	}
-	
 	
 	/**
 	 * Permet de calculer la distance d'atteignabilité d'un point.
@@ -162,24 +131,13 @@ public class LOF {
 	}
 	
 	/**
-	 * Permet d'afficher les distances euclidiennes.
-	 * 
-	 * @param distancesEuclidiennes
-	 */
-	public void afficherDistancesEuclidiennes(ArrayList<Pair<Data, Double>> distancesEuclidiennes) {
-		for(Pair<Data, Double> distanceEuclidienne : distancesEuclidiennes) {
-			System.out.println(distanceEuclidienne.getValue0().getPosition() + " " + distanceEuclidienne.getValue1());
-		}
-	}
-	
-	/**
-	 * Permet d'afficher les distances de Manhattan.
+	 * Permet d'afficher les distances de Manhattan calculées pour chacun des points.
 	 * 
 	 * @param distancesManhattan
 	 */
-	public void afficherDistancesManhattan(ArrayList<Pair<Data, Integer>> distancesManhattan) {
-		for(Pair<Data, Integer> distanceManhattan : distancesManhattan) {
-			System.out.println(distanceManhattan.getValue0().getPosition() + " " + distanceManhattan.getValue1());
+	public void afficherDistancesManhattan(ArrayList<Pair<Point, Integer>> distancesManhattan) {
+		for(Pair<Point, Integer> distanceManhattan : distancesManhattan) {
+			System.out.println(distanceManhattan.getValue0().getX() + " " +  distanceManhattan.getValue0().getY() + "  " + distanceManhattan.getValue1());
 		}
 	}
 	

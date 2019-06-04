@@ -4,57 +4,52 @@ import java.util.ArrayList;
 
 import org.javatuples.Pair;
 
-import kmeans.Data;
-import kmeans.Kmeans;
 import manhattan.Manhattan;
 
 public class App {
 
-	private static double datasBrutes[][] = { { 8.0, 6 }, { 10.0, 8 }, { 12.0, 10 }, { 16, 12 }, { 17, 14 }, { 16, 16 },
-			{ 14, 18 }, { 12, 20 }, { 10, 22 }, { 9, 0 }, { 8, 2 }, { 7, 4 }, { 300, 12 } };
-
 	public static void main(String[] args) {
-		Kmeans kmeans = new Kmeans();
 		LOF lof = new LOF();
 		lof.setK(2);
 		
+		ArrayList<Point> points = new ArrayList<Point>();
+		
+		points.add(new Point(0, 0));
+		points.add(new Point(0, 1));
+		points.add(new Point(1, 1));
+		points.add(new Point(3, 0));
+		
 		Manhattan manhattan = new Manhattan();
-
-		ArrayList<Data> datas = new ArrayList<Data>();
 		
-		datas = kmeans.transformerDatas(datasBrutes);
-		datas = kmeans.normaliserValeursBrutes(datas);
-		datas = kmeans.calculerPositions(datas);
-		
-		for(Data data : datas) 
+		for(Point point : points) 
 		{
-			System.out.println("Point : " + data.getPosition() + "\n");
-			ArrayList<Pair<Data, Integer>> distancesManhattan = lof.recupererDistancesManhattan(data, datas);
+			System.out.println("Point : " + point + "\n");
+			ArrayList<Pair<Point, Integer>> distancesManhattan = lof.recupererDistancesManhattan(point, points);
 			
 			System.out.println("Distance de Manhattan par rapport aux autres points : ");
-			for(Pair<Data, Integer> distanceManhattan : distancesManhattan) {
-				System.out.println(distanceManhattan.getValue0().getPosition() + " " + distanceManhattan.getValue1());
+			for(Pair<Point, Integer> distanceManhattan : distancesManhattan) {
+				System.out.println(distanceManhattan.getValue0() + " " + distanceManhattan.getValue1());
 			}
 			
-			Pair<Data, Integer> plusProcheVoisin = lof.recupererPlusProcheVoisin(distancesManhattan);
-			System.out.println("Le k(" + lof.getK() + ") plus proche est : " + plusProcheVoisin.getValue0().getPosition() + " avec une distance de " + plusProcheVoisin.getValue1());
+			Pair<Point, Integer> plusProcheVoisin = lof.recupererPlusProcheVoisin(distancesManhattan);
+			System.out.println("Le k(" + lof.getK() + ") plus proche est : " + plusProcheVoisin.getValue0() + " avec une distance de " + plusProcheVoisin.getValue1());
 			
-			ArrayList<Pair<Data, Integer>> kPlusProchesVoisins = lof.recupererKPLusProchesVoisins(distancesManhattan);
+			ArrayList<Pair<Point, Integer>> kPlusProchesVoisins = lof.recupererKPLusProchesVoisins(distancesManhattan);
 			System.out.println("Les k(" + lof.getK() + ") plus proches voisins : ");
 			
-			for(Pair<Data, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
-				System.out.println(kPlusProcheVoisin.getValue0().getPosition());
+			for(Pair<Point, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
+				System.out.println(kPlusProcheVoisin.getValue0());
 			}
 			
 			ArrayList<Integer> distancesAtteignabilites = new ArrayList<Integer>();
 			
-			for(Pair<Data, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
-				Pair<Data, Integer> distanceDuPlusProcheVoisin = lof.recupererDistanceDuPlusProcheVoisin(kPlusProcheVoisin.getValue0(), datas);
-				int distanceAtteignabilite = lof.calculerDistanceAtteignabilite(distanceDuPlusProcheVoisin.getValue1().intValue(), manhattan.calculerDistanceManhattan(data.getPosition().getX(), data.getPosition().getY(), kPlusProcheVoisin.getValue0().getPosition().getX(), kPlusProcheVoisin.getValue0().getPosition().getY()));
+			for(Pair<Point, Integer> kPlusProcheVoisin : kPlusProchesVoisins) {
+				Pair<Point, Integer> distanceDuPlusProcheVoisin = lof.recupererDistanceDuPlusProcheVoisin(kPlusProcheVoisin.getValue0(), points);
+				int distanceAtteignabilite = lof.calculerDistanceAtteignabilite(distanceDuPlusProcheVoisin.getValue1().intValue(), manhattan.calculerDistanceManhattan(point.getX(), point.getY(), kPlusProcheVoisin.getValue0().getX(), kPlusProcheVoisin.getValue0().getY()));
 				distancesAtteignabilites.add(distanceAtteignabilite);
 			}
 			
-			System.out.println("La densité d'atteignabilité locale (Local Reachability Density) du point " + data.getPosition() + " est : " + lof.calculerDensiteAtteignabiliteLocale(data, 2, distancesAtteignabilites) + "\n");
+			System.out.println("La densité d'atteignabilité locale (Local Reachability Density) du point " + point + " est : " + lof.calculerDensiteAtteignabiliteLocale(2, distancesAtteignabilites) + "\n");
 		}
 	}
 }

@@ -34,8 +34,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="/kmeans"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/euclide"/>
 	<classpathentry kind="src" path="/manhattan"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
