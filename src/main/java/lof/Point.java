@@ -13,6 +13,7 @@ public class Point {
 	private ArrayList<Pair<Point, Integer>> kPlusProchesVoisins;
 	private double densiteAtteignabiliteLocale;
 	private ArrayList<Pair<Point, Integer>> distancesAtteignabilites;
+	private double facteurLocalAberrant;
 
 	public Point(int x, int y) {
 		this.x = x;
@@ -75,6 +76,14 @@ public class Point {
 
 	public void setDistancesAtteignabilites(ArrayList<Pair<Point, Integer>> distancesAtteignabilites) {
 		this.distancesAtteignabilites = distancesAtteignabilites;
+	}
+	
+	public double getFacteurLocalAberrant() {
+		return facteurLocalAberrant;
+	}
+
+	public void setFacteurLocalAberrant(double facteurLocalAberrant) {
+		this.facteurLocalAberrant = facteurLocalAberrant;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import manhattan.Manhattan;
 public class LOF {
 
 	private int k;
+	private double seuil;
 	private double distanceAtteignabilite;
 	private double distanceAtteignabiliteDensity;
 	private Manhattan manhattan;
@@ -18,9 +19,27 @@ public class LOF {
 		this.manhattan = new Manhattan();
 	}
 
-	public LOF(int k) {
+	public LOF(int k, int seuil) {
 		this.manhattan = new Manhattan();
 		this.k = k;
+		this.seuil = seuil;
+	}
+	
+	/**
+	 * Permet de récupérer les anomalies potentielles à partir des 
+	 * facteurs locaux aberrants calculés précédemment.
+	 * 
+	 * @param facteursLocauxAberrants
+	 * @return anomaliesPotentielles
+	 */
+	public ArrayList<Point> recupererAnomaliesPotentielles(ArrayList<Pair<Point, Double>> facteursLocauxAberrants){
+		ArrayList<Point> anomaliesPotentielles = new ArrayList<Point>();
+		for(Pair<Point, Double> anomaliePotentielle : facteursLocauxAberrants) {
+			if (anomaliePotentielle.getValue1() >= seuil) {
+				anomaliesPotentielles.add(anomaliePotentielle.getValue0());
+			}
+		}
+		return anomaliesPotentielles;
 	}
 	
 	/**
@@ -76,6 +95,7 @@ public class LOF {
 		for(Point point : points) {
 			double facteurLocalAberrant = calculerFacteurLocalAberrant(point.getkPlusProchesVoisins(), point.getDistancesAtteignabilites());
 			facteursLocauxAberrants.add(Pair.with(point, facteurLocalAberrant));
+			point.setFacteurLocalAberrant(facteurLocalAberrant);
 		}
 		
 		return facteursLocauxAberrants;
@@ -243,6 +263,14 @@ public class LOF {
 			System.out.println(distanceManhattan.getValue0().getX() + " " + distanceManhattan.getValue0().getY() + "  "
 					+ distanceManhattan.getValue1());
 		}
+	}
+	
+	public double getSeuil() {
+		return seuil;
+	}
+
+	public void setSeuil(double seuil) {
+		this.seuil = seuil;
 	}
 
 	public int getK() {
