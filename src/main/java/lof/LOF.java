@@ -2,6 +2,7 @@ package lof;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
 
 import org.javatuples.Pair;
 
@@ -251,7 +252,41 @@ public class LOF {
 		}
 		return distanceAtteignabilite;
 	}
-
+	
+	/**
+	 * Permet de générer un point aléatoire selon les informations passées.
+	 * 
+	 * @param valeurMinimaleX
+	 * @param valeurMaximaleX
+	 * @param valeurMinimaleY
+	 * @param valeurMaximaleY
+	 * @return point
+	 */
+	public Point genererPointAleatoire(int valeurMinimaleX, int valeurMaximaleX, int valeurMinimaleY, int valeurMaximaleY){
+		Random random = new Random();
+		Point point = new Point(valeurMinimaleX + random.nextInt(valeurMaximaleX - valeurMinimaleX), valeurMinimaleY + random.nextInt(valeurMaximaleY - valeurMinimaleY));
+		return point;
+	}
+	
+	/**
+	 * Permet de générer des points aléatoires selon les informations passées en paramètres.
+	 * 
+	 * @param valeurMinimaleX
+	 * @param valeurMaximaleX
+	 * @param valeurMinimaleY
+	 * @param valeurMaximaleY
+	 * @param nombre
+	 * @return points
+	 */
+	public ArrayList<Point> genererPointsAleatoires(int valeurMinimaleX, int valeurMaximaleX, int valeurMinimaleY, int valeurMaximaleY, int nombre){
+		ArrayList<Point> points = new ArrayList<Point>();
+		for(int i = 0; i < nombre; i++) {
+			Point point = genererPointAleatoire(valeurMinimaleX, valeurMaximaleX, valeurMinimaleY, valeurMaximaleY);
+			points.add(point);
+		}
+		return points;
+	}
+	
 	/**
 	 * Permet d'afficher les distances de Manhattan calculées pour chacun des
 	 * points.
